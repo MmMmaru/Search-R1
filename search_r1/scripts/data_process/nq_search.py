@@ -97,5 +97,4 @@ if __name__ == '__main__':
 
     if hdfs_dir is not None:
         makedirs(hdfs_dir)
-
         copy(src=local_dir, dst=hdfs_dir)

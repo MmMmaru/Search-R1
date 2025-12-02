@@ -224,7 +224,7 @@ class LLMGenerationManager:
         original_left_side = {'input_ids': initial_input_ids[:, -self.config.max_start_length:]}
         original_right_side = {'responses': initial_input_ids[:, []], 'responses_with_info_mask': initial_input_ids[:, []]}
         
-        # 状态记录
+        # 状态记录 shape:[B]
         active_mask = torch.ones(gen_batch.batch['input_ids'].shape[0], dtype=torch.bool)# 是否有任务
         turns_stats = torch.ones(gen_batch.batch['input_ids'].shape[0], dtype=torch.int)# 执行了几轮
         valid_action_stats = torch.zeros(gen_batch.batch['input_ids'].shape[0], dtype=torch.int)
@@ -239,7 +239,7 @@ class LLMGenerationManager:
             rollings.batch = self.tensor_fn.cut_to_effective_len(
                 rollings.batch,
                 keys=['input_ids', 'attention_mask', 'position_ids']
-            )
+            ) # 根据attention mask裁剪掉无效部分
             
             # gen_output = self.actor_rollout_wg.generate_sequences(rollings)
             rollings_active = DataProto.from_dict({

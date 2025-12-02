@@ -3,7 +3,7 @@ from huggingface_hub import hf_hub_download
 
 parser = argparse.ArgumentParser(description="Download files from a Hugging Face dataset repository.")
 parser.add_argument("--repo_id", type=str, default="PeterJinGo/wiki-18-e5-index", help="Hugging Face repository ID")
-parser.add_argument("--save_path", type=str, required=True, help="Local directory to save files")
+parser.add_argument("--save_path", type=str, default="./data/save_path", help="Local directory to save files")
     
 args = parser.parse_args()
 

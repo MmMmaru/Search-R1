@@ -20,7 +20,8 @@ def load_corpus(corpus_path: str):
         'json', 
         data_files=corpus_path,
         split="train",
-        num_proc=4
+        num_proc=4,
+        cache_dir="/root/autodl-tmp/dataset_cache"
     )
     return corpus
 
@@ -359,10 +360,23 @@ def retrieve_endpoint(request: QueryRequest):
 
 
 if __name__ == "__main__":
+
+# file_path=./data/save_path
+# index_file=$file_path/e5_Flat.index
+# corpus_file=$file_path/wiki-18.jsonl
+# retriever_name=e5
+# retriever_path=intfloat/e5-base-v2
+
+# python search_r1/search/retrieval_server.py --index_path $index_file \
+#                                             --corpus_path $corpus_file \
+#                                             --topk 3 \
+#                                             --retriever_name $retriever_name \
+#                                             --retriever_model $retriever_path \
+#                                             --faiss_gpu
     
     parser = argparse.ArgumentParser(description="Launch the local faiss retriever.")
-    parser.add_argument("--index_path", type=str, default="/home/peterjin/mnt/index/wiki-18/e5_Flat.index", help="Corpus indexing file.")
-    parser.add_argument("--corpus_path", type=str, default="/home/peterjin/mnt/data/retrieval-corpus/wiki-18.jsonl", help="Local corpus file.")
+    parser.add_argument("--index_path", type=str, default="./data/save_path/e5_Flat.index", help="Corpus indexing file.")
+    parser.add_argument("--corpus_path", type=str, default="./data/save_path/wiki-18.jsonl", help="Local corpus file.")
     parser.add_argument("--topk", type=int, default=3, help="Number of retrieved passages for one query.")
     parser.add_argument("--retriever_name", type=str, default="e5", help="Name of the retriever model.")
     parser.add_argument("--retriever_model", type=str, default="intfloat/e5-base-v2", help="Path of the retriever model.")

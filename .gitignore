@@ -1,4 +1,4 @@
-
+data/*
 **/*.pt
 **/checkpoints
 **/wget-log
