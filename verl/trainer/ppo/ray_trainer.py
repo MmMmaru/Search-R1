@@ -334,7 +334,7 @@ class RayPPOTrainer:
         # if ref_in_actor is True, the reference policy will be actor without lora applied
         self.ref_in_actor = (
             config.actor_rollout_ref.model.get("lora_rank", 0) > 0
-            or config.actor_rollout_ref.model.get("lora_adapter_path") is not None
+            or config.actor_rollout_ref.model.get("lora_adapter_path") is not None 
         )
 
         # define in-reward KL control
@@ -606,7 +606,6 @@ class RayPPOTrainer:
                 else self.config.actor_rollout_ref.rollout.agent.num_workers
             )
             test_gen_batch_padded, pad_size = pad_dataproto_to_divisor(test_gen_batch, size_divisor)
-            breakpoint()
             if not self.async_rollout_mode:
                 if self.config.do_search:
                     test_output_gen_batch_padded = generation_manager.run_llm_loop(
@@ -1080,7 +1079,6 @@ class RayPPOTrainer:
 
                 is_last_step = self.global_steps >= self.total_training_steps
                 with marked_timer("step", timing_raw):
-                    breakpoint()
                     # generate a batch
                     with marked_timer("gen", timing_raw, color="red"):
                         if not self.config.do_search:
@@ -1089,8 +1087,6 @@ class RayPPOTrainer:
                                 else:
                                     gen_batch_output = self.async_rollout_manager.generate_sequences(gen_batch_output)
 
-                                timing_raw.update(gen_batch_output.meta_info["timing"])
-                                gen_batch_output.meta_info.pop("timing", None)
                         # if do search with agent loop
                         else:
                             gen_batch_output = generation_manager.run_llm_loop(
@@ -1100,19 +1096,9 @@ class RayPPOTrainer:
                             with torch.no_grad():
                                 output = self.actor_rollout_wg.compute_log_prob(gen_batch_output)
                                 gen_batch_output = gen_batch_output.union(output)
-                            
-                            # final_gen_batch_output.batch.apply(lambda x: x.long(), inplace=True)
-                            for key in gen_batch_output.batch.keys():
-                                gen_batch_output.batch[key] = gen_batch_output.batch[key].long()
 
-                            with torch.no_grad():
-                                output = self.actor_rollout_wg.compute_log_prob(gen_batch_output)
-                                gen_batch_output = gen_batch_output.union(output)
-
-                            # batch.non_tensor_batch['uid'] = np.array([str(uuid.uuid4()) for _ in range(len(batch.batch))],
-                            #                                         dtype=object)
-                            batch.non_tensor_batch['uid'] = batch.non_tensor_batch['index'].copy()
-
+                        timing_raw.update(gen_batch_output.meta_info["timing"])
+                        gen_batch_output.meta_info.pop("timing", None)
                     if self.config.algorithm.adv_estimator == AdvantageEstimator.REMAX:
                         if self.reward_fn is None:
                             raise ValueError("A reward_fn is required for REMAX advantage estimation.")

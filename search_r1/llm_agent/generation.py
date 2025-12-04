@@ -266,11 +266,13 @@ class LLMGenerationManager:
             next_obs_ids = self._process_next_obs(next_obs)
             
             # Update states
+            # 拼接原始状态与搜索动作及信息（prompt、回答、信息）
             rollings = self._update_rolling_state(
                 rollings,
                 responses_ids,
                 next_obs_ids
             )
+            # original_right_side 包含回答和信息
             original_right_side = self._update_right_side(
                 original_right_side,
                 responses_ids,
@@ -376,6 +378,7 @@ class LLMGenerationManager:
         else:
             search_results = [''] * sum([1 for action in cur_actions if action == 'search'])
 
+        # 统计信息
         for i, (action, active) in enumerate(zip(cur_actions, active_mask)):
             
             if not active:
@@ -408,7 +411,7 @@ If I want to give the final answer, I should put the answer between <answer> and
 
     def postprocess_predictions(self, predictions: List[Any]) -> Tuple[List[int], List[bool]]:
         """
-        Process (text-based) predictions from llm into actions and validity flags.
+        Process (text-based) predictions from llm into actions(answer or search actions) and validity flags.
         
         Args:
             predictions: List of raw predictions

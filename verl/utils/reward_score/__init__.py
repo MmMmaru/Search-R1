@@ -91,6 +91,7 @@ def default_compute_score(
 
         res = geo3k.compute_score(solution_str, ground_truth)
     elif data_source in [
+        "nq",
         "searchR1_nq",
         "searchR1_triviaqa",
         "searchR1_popqa",

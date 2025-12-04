@@ -379,7 +379,7 @@ if __name__ == "__main__":
     parser.add_argument("--corpus_path", type=str, default="./data/save_path/wiki-18.jsonl", help="Local corpus file.")
     parser.add_argument("--topk", type=int, default=3, help="Number of retrieved passages for one query.")
     parser.add_argument("--retriever_name", type=str, default="e5", help="Name of the retriever model.")
-    parser.add_argument("--retriever_model", type=str, default="intfloat/e5-base-v2", help="Path of the retriever model.")
+    parser.add_argument("--retriever_model_path", type=str, default="/root/autodl-tmp/models/e5", help="Path of the retriever model.")
     parser.add_argument('--faiss_gpu', action='store_true', help='Use GPU for computation')
 
     args = parser.parse_args()
@@ -392,7 +392,7 @@ if __name__ == "__main__":
         corpus_path=args.corpus_path,
         retrieval_topk=args.topk,
         faiss_gpu=args.faiss_gpu,
-        retrieval_model_path=args.retriever_model,
+        retrieval_model_path=args.retriever_model_path,
         retrieval_pooling_method="mean",
         retrieval_query_max_length=256,
         retrieval_use_fp16=True,

@@ -287,7 +287,6 @@ class TaskRunner:
         tokenizer = hf_tokenizer(local_path, trust_remote_code=trust_remote_code)
         # Used for multimodal LLM, could be None
         processor = hf_processor(local_path, trust_remote_code=trust_remote_code, use_fast=True)
-
         # Load the reward manager for training and validation.
         reward_fn = load_reward_manager(
             config, tokenizer, num_examine=0, **config.reward_model.get("reward_kwargs", {})
@@ -338,6 +337,7 @@ class TaskRunner:
         trainer.init_workers()
 
         # Start the training process.
+        breakpoint()
         trainer.fit()
 
 
