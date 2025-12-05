@@ -1,3 +1,5 @@
+verl_checkpoints/
+trained_100steps/
 data/*
 **/*.pt
 **/checkpoints

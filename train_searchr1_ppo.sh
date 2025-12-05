@@ -23,7 +23,7 @@ WAND_PROJECT='Search-R1'
 
 export BASE_MODEL='/root/autodl-tmp/models/Qwen/Qwen3-0.6B'
 export EXPERIMENT_NAME=nq-search-r1-ppo-qwen3-0.6b
-export RAY_DEBUG_POST_MORTEM=1
+export RAY_DEBUG_POST_MORTEM=0
 
 # set -x
 # export VLLM_ATTENTION_BACKEND=XFORMERS # vllm + qwen2-7b with flash_attn has some issues
@@ -66,12 +66,12 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     trainer.default_hdfs_dir=null \
     trainer.n_gpus_per_node=1 \
     trainer.nnodes=1 \
-    trainer.save_freq=100 \
-    trainer.test_freq=50 \
+    trainer.save_freq=50 \
+    trainer.test_freq=200 \
+    trainer.remove_previous_ckpt_in_save=true\
     trainer.project_name=$WAND_PROJECT \
     trainer.experiment_name=$EXPERIMENT_NAME \
-    trainer.total_epochs=15 \
-    trainer.total_training_steps=1005 \
+    trainer.total_training_steps=200 \
     trainer.default_hdfs_dir=null \
     trainer.default_local_dir=verl_checkpoints/$EXPERIMENT_NAME \
     +do_search=true \

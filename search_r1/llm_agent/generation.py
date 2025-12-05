@@ -244,7 +244,7 @@ class LLMGenerationManager:
             # gen_output = self.actor_rollout_wg.generate_sequences(rollings)
             rollings_active = DataProto.from_dict({
                 k: v[active_mask] for k, v in rollings.batch.items()
-            })            
+            })
             gen_output = self._generate_with_gpu_padding(rollings_active)
 
             meta_info = gen_output.meta_info            
