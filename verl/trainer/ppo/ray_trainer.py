@@ -1090,12 +1090,13 @@ class RayPPOTrainer:
                         # if do search with agent loop
                         else:
                             gen_batch_output = generation_manager.run_llm_loop(
-                                    gen_batch=gen_batch
+                                    gen_batch_output
                                 )
                             
-                            with torch.no_grad():
-                                output = self.actor_rollout_wg.compute_log_prob(gen_batch_output)
-                                gen_batch_output = gen_batch_output.union(output)
+                            # need to compute log probs for PPO loss?
+                            # with torch.no_grad():
+                            #     output = self.actor_rollout_wg.compute_log_prob(gen_batch_output)
+                            #     gen_batch_output = gen_batch_output.union(output)
 
                         timing_raw.update(gen_batch_output.meta_info["timing"])
                         gen_batch_output.meta_info.pop("timing", None)

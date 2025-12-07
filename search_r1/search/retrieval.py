@@ -285,16 +285,16 @@ class DenseRetriever(BaseRetriever):
         for start_idx in tqdm(range(0, len(query_list), batch_size), desc='Retrieval process: '):
             query_batch = query_list[start_idx:start_idx + batch_size]
             
-            # from time import time
-            # a = time()
+            from time import time
+            a = time()
             batch_emb = self.encoder.encode(query_batch)
-            # b = time()
-            # print(f'################### encode time {b-a} #####################')
+            b = time()
+            print(f'################### encode time {b-a} #####################')
             batch_scores, batch_idxs = self.index.search(batch_emb, k=num)
             batch_scores = batch_scores.tolist()
             batch_idxs = batch_idxs.tolist()
-            # print(f'################### search time {time()-b} #####################')
-            # exit()
+            print(f'################### search time {time()-b} #####################')
+            exit()
             
             flat_idxs = sum(batch_idxs, [])
             batch_results = load_docs(self.corpus, flat_idxs)
@@ -329,39 +329,34 @@ def get_dataset(config):
     split_path = os.path.join(config.dataset_path, f'{config.data_split}.jsonl')
     return read_jsonl(split_path)
 
+from dataclasses import dataclass
+@dataclass
+class Config:
+    retrieval_method: str = "e5"  # bm25 or e5-base
+    retrieval_topk: int = 3
+    index_path: str = './data/save_path/e5_Flat.index'
+    corpus_path: str = "./data/save_path/wiki-18.jsonl"
+    dataset_path: str = 'data/'
 
+    faiss_gpu: bool = True
+    
+    retrieval_model_path: str = "/root/autodl-tmp/models/e5"
+    retrieval_pooling_method: str = 'mean'
+    retrieval_query_max_length: int = 256
+    retrieval_use_fp16: bool = True
+    retrieval_batch_size: int = 512
+config = Config()
 if __name__ == '__main__':
-    
-    parser = argparse.ArgumentParser(description = "Retrieval")
-
-    # Basic parameters
-    parser.add_argument('--retrieval_method', type=str)
-    parser.add_argument('--retrieval_topk', type=int, default=10)
-    parser.add_argument('--index_path', type=str, default=None)
-    parser.add_argument('--corpus_path', type=str)
-    parser.add_argument('--dataset_path', default=None, type=str)
-
-    parser.add_argument('--faiss_gpu', default=True, type=bool)
-    parser.add_argument('--data_split', default="train", type=str)
-    
-    parser.add_argument('--retrieval_model_path', type=str, default=None)
-    parser.add_argument('--retrieval_pooling_method', default='mean', type=str)
-    parser.add_argument('--retrieval_query_max_length', default=256, type=str)
-    parser.add_argument('--retrieval_use_fp16', action='store_true', default=False)
-    parser.add_argument('--retrieval_batch_size', default=512, type=int)
-    
-    args = parser.parse_args()
-
-    args.index_path = os.path.join(args.index_path, f'{args.retrieval_method}_Flat.index') if args.retrieval_method != 'bm25' else os.path.join(args.index_path, 'bm25')
 
     # load dataset
-    all_split = get_dataset(args)
+    # all_split = get_dataset(args)
+    all_split = datasets.Dataset.from_parquet(f'data/nq_search/test.parquet')
     
-    input_query = [sample['question'] for sample in all_split[:512]]
+    input_query = [all_split[i]['question'] for i in range(512)]
     
     # initialize the retriever and conduct retrieval
-    retriever = get_retriever(args)
-    print('Start Retrieving ...')    
+    retriever = get_retriever(config)
+    print('Start Retrieving ...')
     results, scores = retriever.batch_search(input_query, return_score=True)
 
     # from IPython import embed

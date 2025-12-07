@@ -13,8 +13,8 @@ import requests
 @dataclass
 class GenerationConfig:
     max_turns: int
-    max_start_length: int
-    max_prompt_length: int 
+    max_start_length: int # 最大的起始prompt长度
+    max_prompt_length: int # 截断rolling的长度
     max_response_length: int
     max_obs_length: int
     num_gpus: int

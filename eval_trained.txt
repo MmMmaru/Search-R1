@@ -1,0 +1,2 @@
+ppo_trained: EM Score: 0.365
+/root/autodl-tmp/models/Qwen/Qwen3-0.6B: - EM Score: 0.145

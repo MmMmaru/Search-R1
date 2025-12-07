@@ -337,7 +337,7 @@ class TaskRunner:
         trainer.init_workers()
 
         # Start the training process.
-        # breakpoint()
+        breakpoint()
         trainer.fit()
 
 

@@ -374,30 +374,9 @@ if __name__ == "__main__":
 #                                             --retriever_model $retriever_path \
 #                                             --faiss_gpu
     
-    parser = argparse.ArgumentParser(description="Launch the local faiss retriever.")
-    parser.add_argument("--index_path", type=str, default="./data/save_path/e5_Flat.index", help="Corpus indexing file.")
-    parser.add_argument("--corpus_path", type=str, default="./data/save_path/wiki-18.jsonl", help="Local corpus file.")
-    parser.add_argument("--topk", type=int, default=3, help="Number of retrieved passages for one query.")
-    parser.add_argument("--retriever_name", type=str, default="e5", help="Name of the retriever model.")
-    parser.add_argument("--retriever_model_path", type=str, default="/root/autodl-tmp/models/e5", help="Path of the retriever model.")
-    parser.add_argument('--faiss_gpu', action='store_true', help='Use GPU for computation')
-
-    args = parser.parse_args()
-    
     # 1) Build a config (could also parse from arguments).
     #    In real usage, you'd parse your CLI arguments or environment variables.
-    config = Config(
-        retrieval_method = args.retriever_name,  # or "dense"
-        index_path=args.index_path,
-        corpus_path=args.corpus_path,
-        retrieval_topk=args.topk,
-        faiss_gpu=args.faiss_gpu,
-        retrieval_model_path=args.retriever_model_path,
-        retrieval_pooling_method="mean",
-        retrieval_query_max_length=256,
-        retrieval_use_fp16=True,
-        retrieval_batch_size=512,
-    )
+    config = Config()
 
     # 2) Instantiate a global retriever so it is loaded once and reused.
     retriever = get_retriever(config)
